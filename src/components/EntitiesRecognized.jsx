@@ -37,26 +37,31 @@ export default function EntitiesRecognized() {
         }
     }
 
-    useEffect(() => {
+    const dataFetch = async () => {
         if (text) {
-            console.log ('i have text')
-        } else {
-            console.log("can't find text")
-        }
-        const dataFetch = async () => {
             let textEncoded = encodeURIComponent(text)
             await call_razor(textEncoded).then(() => splitIntoSentences())
-          }
+        } else {
+            setLoading(true)
+        }
+    }
+
+    useEffect(() => {
+        if (text) {
+            localStorage.setItem('text', text)
+        } else {
+            setText(localStorage.getItem('text'))
+        }
         dataFetch();
-    }, [isLoading]);
+    }, [text]);
 
     const splitIntoSentences = () => {
         
         let changed_text = text.replace(/(\r\n|\n|\r)/gm, " ")
-        changed_text = changed_text.replaceAll('in writing. ', 'in writing: ')
+        changed_text = changed_text.replace(/[\w.]\s-\s/g, ': - ')
         changed_text = changed_text.replaceAll('3.5', '3,5')
-        changed_text = changed_text.replaceAll('no.', 'no ')
-        // changed_text = changed_text.replaceAll(/^[0-9]*\.?[0-9]*$/, ',')
+        changed_text = changed_text.replaceAll(' no. ', ' №')
+        changed_text = changed_text.replaceAll(' No ', ' №')
         let sentences = changed_text.split('.')
         sentences.pop("")
         let sentenceHighlighted = sentences.map((sentence, idx) => {
