@@ -1,24 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
+import { TextContext } from './context/Context';
+import AppRouter from './router/AppRouter';
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
+
+  const [text, setText] = useState("");
+
   return (
+    <TextContext.Provider value={{text, setText}}>
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <BrowserRouter>
+          <AppRouter/>
+        </BrowserRouter>
       </header>
     </div>
+    </TextContext.Provider>
   );
 }
 
